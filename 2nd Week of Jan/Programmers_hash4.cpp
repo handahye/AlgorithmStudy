@@ -32,9 +32,9 @@ void selectSong(string genre) {
 vector<int> solution(vector<string> genres, vector<int> plays) {
 	vector<int> answer;
 	for (int i = 0; i < genres.size(); i++) {
-		g.insert({ genres[i], i });
-		p.insert({ i, plays[i] });
-		m[genres[i]] += plays[i];
+		g.insert({ genres[i], i });//{장르, 고유번호}->multimap key 중복 가능
+		p.insert({ i, plays[i] });//{고유번호, 재생횟수}
+		m[genres[i]] += plays[i];//{장르, 장르별 총 재생횟수} -> map key 중복 안됨
 	}
 	//장르 순위 구하기
 	selectGenre();
