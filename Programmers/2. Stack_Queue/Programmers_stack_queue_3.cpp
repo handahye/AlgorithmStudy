@@ -3,19 +3,46 @@
 #include <queue>
 #include <list>
 using namespace std;
-int solution(int bridge_length, int weight, vector<int> truck_weights) {
-	int time = 1;
-	/*
-	- list: 
-		1) 현재 다리를 지나고 있는 트럭들의 무게를 재야하니까 iterator를 사용하기 위해
-		2) push할땐 현재 다리위를 지나고 있는 트럭들의 맨 뒤에 push하고
-		다리를 다 지나간 경우 맨 앞의 트럭을 pop하기 위해서 
+/*
+- list(passing):
+1) 현재 다리를 지나고 있는 트럭들의 무게를 재야하니까 iterator를 사용하기 위해
+2) push할땐 현재 다리위를 지나고 있는 트럭들의 맨 뒤에 push하고
+다리를 다 지나간 경우 맨 앞의 트럭을 pop하기 위해서
 
-	- queue: 다리를 지나가기 위해 기다리는 트럭들 queue에 삽입(waiting)
+- queue(waiting): 다리를 지나가기 위해 기다리는 트럭들 queue에 삽입
+*/
+int solution(int bridge_length, int weight, vector<int> truck_weights) {
+	/*
+	<1초>
+	passing: | 7 |  
+	waiting: | 4 | 5 | 6 |
+
+	<2초> 
+	passing: | 7 | -> | 7 | 0 | [무게 4의 트럭이 못 지나가니까 0 push]
+	waiting: | 4 | 5 | 6 |
+
+	<3초> 
+	[pssing size = 2, 무게 7의 트럭이 다리 다 건넌거니까 pop]
+	passing: | 7 | 0 | -> | 0 | -> | 0 | 4 |
+	waiting: | 5 | 6 |
+
+	<4초> 
+	passing: | 0 | 4 | -> | 4 | -> | 4 | 5 |
+	waiting: | 6 |
+
+	<5초> 
+	passing: | 4 | 5 | -> | 5 | -> | 5 | 0 |
+	waiting: | 6 |
+
+	<6초> 
+	passing: | 5 | 0 | -> | 0 | -> | 0 | 6 |
+	waiting: empty
+
+	정답: 6초 + 다리길이(2) = 8초
 	*/
+	int time = 1;
 	list<int> passing;
 	queue<int> waiting;
-
 	//1. 첫번째로 지나가야 하는 트럭 passing list에 삽입
 	passing.push_back(truck_weights[0]);
 	//2. 대기중인 트럭들 queue에 삽입
@@ -39,16 +66,6 @@ int solution(int bridge_length, int weight, vector<int> truck_weights) {
 		//6-2) 지나갈 수 없는 경우
 		else
 			passing.push_back(0);//맨 앞의 트럭이 다리 다 건넜는지 체크하려고
-		/*
-		<1초> | 7 |
-		<2초> | 7 | -> | 7 | 0 | [무게 4의 트럭이 못 지나가니까 0 push]
-		<3초> [pssing size = 2, 무게 7의 트럭이 다리 다 건넌거니까 pop] | 7 | 0 | -> | 0 | -> | 0 | 4 | 
-		<4초> | 0 | 4 | -> | 4 | -> | 4 | 5 | 
-		<5초> | 4 | 5 | -> | 5 | -> | 5 | 0 |
-		<6초> | 5 | 0 | -> | 0 | -> | 0 | 6 | 
-		
-		정답: 6초 + 다리길이(2) = 8초
-		*/
 
 		//7. 시간 증가
 		time++;
