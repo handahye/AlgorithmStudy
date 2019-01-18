@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <queue>
 using namespace std;
-
 int solution(vector<int> scoville, int K) {
 	int answer = 0;
 	priority_queue<int> que;
@@ -23,4 +22,6 @@ int solution(vector<int> scoville, int K) {
 		answer++;
 		que.push(-newS);
 	}
+int main() {
+	return 0;
 }
