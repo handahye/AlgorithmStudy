@@ -5,31 +5,21 @@
 using namespace std;
 int solution(string name) {
 	int answer = 0;
-	int left = 0, right = 0;
-	answer = min(name[0] - 'A', 'Z' - name[0] + 1);
-	//1. 오른쪽 A 개수 세기
-	for (int i = 1;i<name.size();i++) {
-		if (name[i] == 'A')right++;
-		else break;
-	}
-	//2. 왼쪽 A 개수 세기
-	for (int i = name.size() - 1;i>0;i--) {
-		if (name[i] == 'A') left++;
-		else break;
-	}
-
-	if (right <= left) {	//3-1) 오른쪽으로 이동하는 경우
-		for (int i = 1;i<name.size() - left;i++) {
-			answer++;
-			answer += min(name[i] - 'A', 'Z' - name[i] + 1);
+	int upDown[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,12,11,10,9,8,7,6,5,4,3,2,1 };
+	for (int i = 0; i < name.size(); i++) {
+		answer += upDown[name.at(i) - 'A'];
+	} //위 아래로 움직였을 때 최소 움직임 
+	int leftRight = name.size() - 1;
+	int len = name.size();
+	for (int i = 0; i < name.size(); i++) {
+		int next = i + 1;
+		while (1) {//현재 위치부터 A가 나오는 지점까지 길이 구함
+			if (next == name.size() || name.at(next) != 'A') break;
+			next++;
 		}
+		int tmp = min(i, len - next); //원점부터 앞으로 쭉 가는것과 뒤로 둘아 가는 것 중 짧은 거 
+		leftRight = min(leftRight, i + (len - next) + tmp);
 	}
-	else {	//3-2) 왼쪽으로 이동하는 경우
-		for (int i = name.size() - 1;i>right;i--) {
-			answer++;
-			answer += min(name[i] - 'A', 'Z' - name[i] + 1);
-		}
-	}
-
+	answer += leftRight;
 	return answer;
 }
