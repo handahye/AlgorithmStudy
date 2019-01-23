@@ -4,7 +4,7 @@
 #include <string.h>
 #include<iostream>
 using namespace std;
-/*priorty queue*/
+/*priority queue*/
 int visit[101];//현재 섬에 방문했는지 체크
 vector<pair<int, int>> island[101];
 void init() {
