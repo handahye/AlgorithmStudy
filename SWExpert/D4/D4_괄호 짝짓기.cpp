@@ -29,22 +29,22 @@ int main() {
 			v.push_back(c);
 		}
 		stack<char> s;
-		if (v[0] == '(' || v[0] == '{' || v[0] == '[' || v[0] == '<') s.push(v[0]);
-		else chk = false;
+		if (v[0] == '(' || v[0] == '{' || v[0] == '[' || v[0] == '<') s.push(v[0]); //처음이 여는 괄호면 stack에 넣기
+		else chk = false; //처음이 닫는 괄호면 안되는 경우
 		int idx = 0;
 		while (!s.empty()) {
 			idx++;
 			if (v[idx] == '(' || v[idx] == '{' || v[idx] == '[' || v[idx] == '<') {
 				s.push(v[idx]);
-				continue;
+				continue; //여는 괄호가 나오면 계속 stack에 넣음
 			}
 			else {
-				char t = s.top();
+				char t = s.top(); //닫는 괄호가 나오면 바로 전의 여는 괄호와 쌍인지 확인
 				if (chkBar(t, v[idx])) {
 					s.pop();
 					continue;
 				}
-				else {
+				else { //쌍이 아니면 안되는 경우
 					chk = false;
 					break;
 				}
