@@ -20,31 +20,31 @@ int main() {
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
 				cin >> map[i][j];
-		if (str == "up") {
+		if (str == "up") { //왼쪽 행, 위에서부터 0이 아니면 큐에 담음
 			for (i = 0; i < N; i++) {
 				for (j = 0; j < N; j++) {
-					if (map[j][i] != 0) q.push(map[j][i]); //0이 아닌 숫자를 모두 큐에 담음
+					if (map[j][i] != 0) q.push(map[j][i]);
 				}
-				int idx = 0;
+				int idx = 0; //한 행의 체크가 끝나면 
 				while (!q.empty()) {
 					int cur = q.front();
 					q.pop();
 					bool chk = false;
-					if (!q.empty()) { 
+					if (!q.empty()) { //큐에 아직 숫자가 있는 경우
 						int next = q.front();
 						if (next == cur) { //현재 숫자와 다음 숫자가 같은 경우
 							q.pop();
-							res[idx][i] = cur * 2; 
+							res[idx][i] = cur * 2; //현재 가르키는 곳을 2배해서 채워넣음
 							chk = true;
 						}
 					}
-					if(!chk) res[idx][i] = cur;
+					if(!chk) res[idx][i] = cur; //큐에 숫자가 더이상 없거나, 현재 숫자와 다음 숫자가 다른 경우
 					idx++;
 				}
 			}
 		}
 		else if (str == "down") {
-			for (i = 0; i < N; i++) {
+			for (i = 0; i < N; i++) { //왼쪽 행, 아래서부터 0이 아니면 큐에 담음
 				for (j = N-1; j >= 0; j--) {
 					if (map[j][i] != 0)q.push(map[j][i]);
 				}
@@ -55,19 +55,19 @@ int main() {
 					bool chk = false;
 					if (!q.empty()) {
 						int next = q.front();
-						if (next == cur) { //현재 숫자와 다음 숫자가 같은 경우
+						if (next == cur) { 
 							q.pop();
 							res[idx][i] = cur * 2;
 							chk = true;
 						}
 					}
-					if(!chk) res[idx][i] = cur; //다른 경우는 그냥 현재 숫자 넣음
+					if(!chk) res[idx][i] = cur; 
 					idx--;
 				}
 			}
 
 		}
-		else if (str == "right") {
+		else if (str == "right") { //위의 열, 오른쪽 부터 
 			for (int i = 0; i < N; i++) {
 				for (int j = N - 1; j >= 0; j--) {
 					if (map[i][j] != 0) q.push(map[i][j]);
@@ -79,7 +79,7 @@ int main() {
 					bool chk = false;
 					if (!q.empty()) {
 						int next = q.front();
-						if (next == cur) { //현재 숫자와 다음 숫자가 같은 경우
+						if (next == cur) { 
 							q.pop();
 							res[i][idx] = cur * 2;
 							chk = true;
@@ -90,7 +90,7 @@ int main() {
 				}
 			}
 		}
-		else if (str == "left") {
+		else if (str == "left") {//위의 열 왼쪽부터
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
 					if(map[i][j]!=0) q.push(map[i][j]);
@@ -102,7 +102,7 @@ int main() {
 					bool chk = false;
 					if (!q.empty()) {
 						int next = q.front();
-						if (next == cur) { //현재 숫자와 다음 숫자가 같은 경우
+						if (next == cur) { 
 							q.pop();
 							res[i][idx] = cur * 2;
 							chk = true;

@@ -16,7 +16,7 @@ int er, ec, sr, sc;
 int End = false;
 void dfs(int r, int c) {
 	if (End) return;
-	if (r == sr && c == sc) {
+	if (r == sr && c == sc) { //출발 지점까지 도착할 수 있으면 End에 ture 체크
 		End = true;
 		return;
 	}
@@ -24,7 +24,7 @@ void dfs(int r, int c) {
 		int nr = r + dr[d];
 		int nc = c + dc[d];
 		if (nr >= 0 && nc >= 0 && nr < 100 && nc < 100) {
-			if (!visit[nr][nc] && map[nr][nc]!=1) {
+			if (!visit[nr][nc] && map[nr][nc]!=1) { //방문하지 않았고, 벽이 아닌 경우
 				visit[nr][nc] = 1;
 				dfs(nr, nc);
 			}
@@ -45,7 +45,7 @@ int main() {
 			}
 		}
 		visit[er][ec] = 1;
-		dfs(er, ec);
+		dfs(er, ec);//도착 지점에서 출발 지점까지 갈 수 있는지 
 		if (End) printf("#%d 1\n",t);
 		else printf("#%d 0\n",t);
 	}
