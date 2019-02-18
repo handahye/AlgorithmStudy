@@ -5,7 +5,7 @@
 using namespace std;
 /*
 BOJ_2252_줄세우기
-: 위상정렬
+:위상정렬
 */
 vector<int> map[32002];
 stack <int> s;
