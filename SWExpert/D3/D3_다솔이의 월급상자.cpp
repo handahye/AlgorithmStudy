@@ -10,7 +10,7 @@ int main() {
 		for (int i = 0; i < N;i++) {
 			long double p1, x1;
 			scanf("%Lf %Lf", &p1, &x1);
-			res += (p1*x1);
+			res += (p1*x1); //입력받은 확률 * 만원를 모두 더함
 		}
 		printf("#%d %.6Lf\n", t, res);
 	}

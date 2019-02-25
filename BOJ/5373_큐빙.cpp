@@ -141,9 +141,9 @@ void sideChange(char d, int cw) {
 	else if (num == 4) Left(cw);
 	else if (num == 5) Right(cw);
 }
-void frontChangeCw(char d) {
+void frontChangeCw(char d) { //해당 면을 회전시키는 부분
 	int num = charToInt(d);
-	queue<int> q;
+	queue<int> q; 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			q.push(cube[num][i][j]);

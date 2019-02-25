@@ -15,7 +15,7 @@ int main() {
 		}
 		dp[0] = 1; 
 		for (int i = 0; i < N;i++) {
-			for (int j = sum; j >= 0; j--) {//0부터 sum까지 돌리면 누적해서 계산한 점수에 계속 갱신되니까
+			for (int j = sum; j >= 0; j--) {//0부터 sum까지 돌리면 누적해서 계산한 점수에 계속 갱신되니까, sum부터 0으로 ! 
 				if (dp[j]) dp[j + score[i]] = 1; //계산된 점수 + 현재 선택한 점수
 			}
 		}
