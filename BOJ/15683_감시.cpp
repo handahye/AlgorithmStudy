@@ -38,9 +38,9 @@ int cal() {
 	}
 	return res;
 }
-void dfs(int idx) {
-	if (idx == cctv.size()) {
-		minN = min(minN, cal());
+void dfs(int idx) { 
+	if (idx == cctv.size()) {//모든 cctv를 다 확인한 경우
+		minN = min(minN, cal()); //계산해봄
 		return;
 	}
 	int r = cctv[idx].first;
@@ -48,12 +48,12 @@ void dfs(int idx) {
 	int num = map[r][c];
 	int tmp[9][9];
 
-	mapCopy(tmp, map);
+	mapCopy(tmp, map); //tmp에 현재 map을 복사해놓음 -> 그 전으로 돌려야 되니까
 	if (num == 1) {
 		for (int d = 0; d < 4; d++) {
 			go(r, c, d);
 			dfs(idx + 1);
-			mapCopy(map, tmp);
+			mapCopy(map, tmp); //그 1번 cctv를 확인하기 전 map으로 돌림
 		}
 	}
 	else if (num == 2) {
@@ -90,7 +90,7 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
 			scanf("%d", &map[i][j]);
-			if (map[i][j] >= 1 && map[i][j] <= 5)
+			if (map[i][j] >= 1 && map[i][j] <= 5) //cctv를 vector에 담아놓음
 				cctv.push_back({ i,j });
 		}
 	}

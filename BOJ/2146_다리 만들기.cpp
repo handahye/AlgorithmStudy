@@ -22,7 +22,7 @@ void dfs(int r, int c, int num) {
 		}
 	}
 }
-int bfs(int num) {
+int bfs(int num) {//num의 번호를 가진 섬에서 가장 가까운 다른 섬 찾기
 	queue<pair<int, int>> q;
 	memset(visit, 0, sizeof(visit));
 	for (int i = 0; i < n; i++) {
@@ -43,15 +43,15 @@ int bfs(int num) {
 				int nr = r + dr[i];
 				int nc = c + dc[i];
 				if (nr >= 0 && nc >= 0 && nr < n && nc < n) {
-					if (map[nr][nc] != 0 && map[nr][nc] != num) return res;
-					if (map[nr][nc] == 0 && !visit[nr][nc]) {
+					if (map[nr][nc] != 0 && map[nr][nc] != num) return res; //다른 섬이면
+					if (map[nr][nc] == 0 && !visit[nr][nc]) { //아직 방문하지 않은 강물이면
 						visit[nr][nc] = 1;
 						q.push({ nr,nc });
 					}
 				}
 			}
 		}
-		res++;
+		res++;//거리증가
 	}
 }
 int main() {
@@ -61,7 +61,7 @@ int main() {
 			cin >> map[i][j];
 	}
 	int num = 1;
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {//섬 나누기 (각 섬에 번호 부여해줌)
 		for (int j = 0; j < n; j++)
 			if (map[i][j] && !visit[i][j]) 
 				dfs(i, j, num++);
