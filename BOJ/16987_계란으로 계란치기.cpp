@@ -6,64 +6,35 @@
 using namespace std;
 struct egg {
 	int s, w;
-	bool chk;
 };
 int N;
 vector<egg>v;
 int maxN = 0;
 bool visit[9][301];
-int countBreak() {
-	int res = 0;
-	for (int i = 0; i < v.size(); i++) {
-		if (v[i].chk) res++;
-	}
-	return res;
-}
-void breakEgg(int a, int b) {
+int breakEgg(int a, int b) {
+	int cnt = 0;
 	v[a].s -= v[b].w;
 	v[b].s -= v[a].w;
-
-	if (v[a].s <= 0) v[a].chk = true;
-	if (v[b].s <= 0) v[b].chk = true;
+	if (v[a].s <= 0) cnt++;
+	if (v[b].s <= 0) cnt++;
+	return cnt;
 }
-int nextEgg(int cur) {
-	bool chk = false;
-	for (int i = cur + 1; i < N; i++) {
-		if (!v[i].chk) {
-			visit[i][i] = true;
-			return i;
-		}
-	}
-	if (!chk) {
-		maxN = max(maxN, countBreak());
-		return -1;
-	}
-}
-void dfs(int cur) {
-	if (cur == -1) {
-		maxN = max(maxN, countBreak());
+void dfs(int cur, int cnt) {
+	if (cur == N) {
+		maxN = max(maxN, cnt);
 		return;
 	}
-	if (cur == v.size() - 1) {
-		for (int i = 0; i < v.size(); i++) {
-			vector<egg> tmp = v;
-			if (i == cur) continue;
-			if (!v[i].chk) {
-				breakEgg(cur, i);
-				maxN = max(maxN, countBreak());
-				v = tmp;
-			}
-		}
-		return;			
+	if (v[cur].s <= 0 || cnt == N - 1) {
+		dfs(cur + 1, cnt);
+		return;
 	}
 	vector<egg> tmp = v;
 	for (int i = 0; i < v.size(); i++) {
-		if (i == cur) continue;
+		if (i == cur || v[i].s <= 0) continue;
 		if (!visit[cur][i]) {
 			visit[cur][i] = true;
-			if(!v[i].chk) breakEgg(cur, i); 
-			int next = nextEgg(cur);
-			dfs(next);
+			int count = breakEgg(i, cur);
+			dfs(cur + 1, cnt + count);
 			visit[cur][i] = false;
 			v = tmp;
 		}
@@ -74,10 +45,10 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		int s, w;
 		scanf("%d %d", &s, &w);
-		v.push_back({ s,w, false });
+		v.push_back({ s,w });
 	}
 	visit[0][0] = true;
-	dfs(0);
+	dfs(0, 0);
 	printf("%d\n", maxN);
 	return 0;
 }
