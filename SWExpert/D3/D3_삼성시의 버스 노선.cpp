@@ -1,31 +1,49 @@
-#include<iostream>
-#include<string.h>
-#include<algorithm>
-#include<queue>
-#include<vector>
-using namespace std;
+
 int main() {
+	cout << " 얍";
 	int T;
-	scanf("%d", &T);
-	for (int t = 1; t <= T; t++) {
-		int map[5001] = { 0, };
-		printf("#%d ", t);
-		int N;
-		scanf("%d", &N);
-		for (int i = 0; i < N; i++) {
-			int a, b;
-			scanf("%d%d", &a, &b);
-			for (int k = a; k <= b; k++)
-				map[k] += 1;
+	cin >> T;
+
+
+	for (int k = 1; k <= T; k++) {
+		int N, Q;
+		cin >> N >> Q;
+
+		int cow[100001];
+		int L[100001], R[100001];
+		int one[100001], two[100001], thr[100001];
+
+		for (int i = 1; i <= N; i++) { //N개 소 품종 입력받
+			cin >> cow[i];
 		}
-		int p;
-		scanf("%d", &p);
-		for (int i = 0; i < p; i++) {
-			int c;
-			scanf("%d", &c);
-			printf("%d ", map[c]);
+
+		for (int j = 0; j < Q; j++) { //문제 입력받
+			cin >> L[j] >> R[j];
+
+			one[j] = 0;
+			two[j] = 0;
+			thr[j] = 0;
+
+			for (int i = L[j]; i <= R[j]; i++) { //품종 수 구하기
+				if (cow[i] == 1) {
+					one[j]++;
+				}
+				else if (cow[i] == 2) {
+					two[j]++;
+				}
+				else {
+					thr[j]++;
+				}
+			}
+
 		}
-		printf("\n");
+		//답 출력
+		cout << "#" << k << endl;
+		for (int j = 0; j < Q; j++) {
+			cout << one[j] << " " << two[j] << " " << thr[j] << endl;
+		}
+
 	}
+
 	return 0;
 }
