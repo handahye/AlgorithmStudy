@@ -1,34 +1,25 @@
 #include <iostream>
-#include<algorithm>
+#include <algorithm>
 #include<vector>
-#include<queue>
+#include <queue>
 #include<string.h>
 using namespace std;
-/*
-BOJ_16236_아기상어
-*/
+int dr[] = { -1,1,0,0 };
+int dc[] = { 0,0,-1,1 };
+int sr, sc, N;
 int map[21][21];
-int visit[21][21];
-int dr[] = { -1,0,1,0 };
-int dc[] = { 0,-1,0,1 };
-struct shark {
-	int r, c, shSize, cnt, time;
-};
-bool cmp(shark a, shark b) {
-	if (a.time < b.time) return true;
-	else if (a.time == b.time) {
-		if (a.r < b.r) return true;
-		else if (a.r == b.r) {
-			if (a.c < b.c) return true;
-			else return false;
-		}
-		else if (a.r>b.r) return false;
+bool visit[21][21];
+bool cmp(pair<int, int> a, pair<int, int> b) {
+	if (a.first == b.first) {
+		if (a.second < b.second) return true;
+		else return false;
 	}
-	else if (a.time>b.time) return false;
+	else if (a.first < b.first) return true;
+	else return false;
+
 }
 int main() {
-	int N;
-	int sr, sc;
+	int time = 0, fSize = 2, fcnt=0;
 	scanf("%d", &N);
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
@@ -36,50 +27,49 @@ int main() {
 			if (map[i][j] == 9) sr = i, sc = j;
 		}
 	}
-	queue<shark> q;
 	map[sr][sc] = 0;
-	visit[sr][sc] = 1;
-	q.push({ sr,sc,2,0,0 });
-	int ans = 0;
 	while (1) {
-		vector<shark> v;
-		memset(visit, 0, sizeof(visit));
-		while (!q.empty()) {
-			int r = q.front().r;
-			int c = q.front().c;
-			int shSize = q.front().shSize;
-			int cnt = q.front().cnt;
-			int time = q.front().time;
-			q.pop();
+		queue<pair<int, pair<int, int>>> q;
+		vector<pair<int, int>> possible;
+		q.push({ 0,{sr,sc } });
+		bool chk = false;
+		int minDist = 987654321;
+		memset(visit, false, sizeof(visit));
 
+		while (!q.empty()) {
+			int r = q.front().second.first;
+			int c = q.front().second.second;
+			int cnt = q.front().first;
+			q.pop();
+	
 			for (int d = 0; d < 4; d++) {
-				int nr = r + dr[d];
-				int nc = c + dc[d];
-				if (nr >= 0 && nc >= 0 && nr < N && nc < N && !visit[nr][nc]) {
-					if (map[nr][nc] == 0 || map[nr][nc] == shSize) {
-						visit[nr][nc] = 1;
-						q.push({ nr,nc,shSize,cnt,time + 1 });
+				int nr = r + dr[d], nc = c + dc[d];
+				if (nr >= 0 && nc >= 0 && nr < N && nc < N &&!visit[nr][nc]) {
+					if (map[nr][nc] < fSize && map[nr][nc]!=0 && cnt+1<=minDist) {
+						possible.push_back({ nr,nc });
+						minDist = min(minDist, cnt+1);
+						visit[nr][nc] = true;
 					}
-					else if (map[nr][nc] < shSize) {
-						visit[nr][nc] = 1;
-						v.push_back({ nr,nc,shSize,cnt + 1,time + 1 });
+					else if (map[nr][nc] == fSize || map[nr][nc] == 0) {
+						visit[nr][nc] = true;
+						q.push({ cnt + 1 ,{nr, nc} });
 					}
 				}
 			}
 		}
+		if (possible.size() == 0) break;
+		if(possible.size()>1) sort(possible.begin(), possible.end(),cmp);
 
-		if (v.size() == 0) break;
+		time += minDist;
+		sr = possible[0].first, sc = possible[0].second;
+		map[sr][sc] = 0;
+		fcnt++;
 
-		sort(v.begin(), v.end(), cmp);
-		if (v[0].shSize == v[0].cnt) {
-			v[0].shSize++;
-			v[0].cnt = 0;
+		if (fcnt == fSize) {
+			fSize++;
+			fcnt = 0;
 		}
-		map[v[0].r][v[0].c] = 0;
-		ans += v[0].time;
-		visit[v[0].r][v[0].c] = 1;
-		q.push({ v[0].r, v[0].c, v[0].shSize, v[0].cnt, 0 });
 	}
-	cout << ans;
+	printf("%d", time);
 	return 0;
 }
