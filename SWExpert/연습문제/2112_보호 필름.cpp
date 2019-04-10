@@ -11,7 +11,7 @@ void mapCopy(int a[], int b[]) {
 }
 bool chk() {
 	for (int i = 0; i < W; i++) {
-		int cnt = 1;
+		int cnt = 1;//K개 연속되는지 체크
 		for (int j = 0; j < D - 1; j++) {
 			if (cnt == K) break;
 			if (map[j][i] == map[j + 1][i]) cnt++;
@@ -27,8 +27,8 @@ void change(int r, int type) {
 	}
 }
 void dfs(int idx, int cnt) {
-	if (cnt >= res) return;
-	if (chk()) {
+	if (cnt >= res) return; 
+	if (chk()) { //약물 투입 한번 할 때마다 체크해봄
 		res = min(res, cnt);
 		return;
 	}
@@ -36,7 +36,7 @@ void dfs(int idx, int cnt) {
 	for (int i = idx + 1; i < D; i++) {
 		mapCopy(tmp, map[i]);
 		for (int k = 0; k < 2; k++) {
-			change(i, k);
+			change(i, k); //약물 투입
 			dfs(i, cnt + 1);
 		}
 		mapCopy(map[i], tmp);
