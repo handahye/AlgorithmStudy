@@ -16,150 +16,113 @@ using namespace std;
 
 2) 상어 이동
    - 해당 방향으로 여러칸 이동 가능~~~! (전부 다 따져야 함)
-
-* 고려해야할 사항..
-  우선순위 큐 !! 써서 숫자가 작은 순서대로 나오게 .. ?
 */
-
-struct node
-{
+int res = 0;
+struct Fish {
 	int r, c, dir;
+	bool isDead;
 };
-int res = 1;
-int sharkR = 0, sharkC = 0, sharkDir;
-vector<node> fish(17);
-priority_queue<int> que;
 int dr[] = { 0, -1, -1, 0, 1, 1, 1, 0, -1 };
 int dc[] = { 0, 0, -1, -1, -1, 0, 1, 1, 1 };
-int map[4][4] = {
-	0,
-};
-bool canMove(int r, int c)
-{
-	if (r == sharkR && c == sharkC)
-		return false;
-	if (r < 0 || c < 0 || r > 3 || c > 3)
-		return false;
-	return true;
+void fishCopy(Fish dest[17], Fish src[17]) {
+	for (int i = 1; i <= 16; i++) {
+		dest[i] = src[i];
+	}
 }
-void change(int r1, int c1, int num1, int r2, int c2, int num2)
-{
-	map[r1][c1] = num2;
-	map[r2][c2] = num1;
+void mapCopy(int dest[4][4], int src[4][4]) {
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+			dest[i][j] = src[i][j];
+}
+void dfs(Fish org_fish[17], int org_map[4][4], int r, int c, int sum) {
+	if (res < sum)res = sum;
+	int map[4][4];
+	Fish fish[17];
 
-	fish[num1].r = r2;
-	fish[num1].c = c2;
-	fish[num2].r = r1;
-	fish[num2].c = c1;
-}
-void moveFish()
-{
-	int fsize = que.size();
+	fishCopy(fish, org_fish);
+	mapCopy(map, org_map);
+
+	int eatNum = map[r][c];
+	int dir = fish[eatNum].dir; //상어 이동 방향 
+	fish[eatNum].isDead = true;
+	map[r][c] = 0;
 	//물고기 이동
-	for (int i = 0; i < fsize; i++)
-	{
-		int num = que.top();
+	for (int i = 1; i <= 16; i++) {
+		if (!fish[i].isDead) {
+			int dd = fish[i].dir;
+			int rr = fish[i].r;
+			int cc = fish[i].c;
+			for (int d = 0; d < 8; d++) {
+				int nr = rr + dr[dd];
+				int nc = cc + dc[dd];
+				if (nr < 0 || nc < 0 || nr >= 4 || nc >= 4) { // 맵 벗어나면 
+					dd++;
+					if (dd == 9) {
+						dd = 1;
+					}
+					fish[i].dir = dd;
+					continue;
+				}
+				if (nr == r && nc == c) { //상어 자리면 
+					dd++;
+					if (dd == 9) dd = 1;
+					fish[i].dir = dd;
+					continue;
+				}
 
-		int r = fish[num].r;
-		int c = fish[num].c;
-		int dir = fish[num].dir;
-
-		int nr = r + dr[dir];
-		int nc = c + dc[dir];
-		if (canMove(nr, nc))
-		{
-			change(r, c, num, nr, nc, map[nr][nc]);
-		}
-		else
-		{
-			int cnt = 0;
-			while (1)
-			{
-				if (cnt == 7)
-					break; //모든 방향 다 체크해서 안되면 가만히
-
-				dir++;
-				if (dir == 9)
-					dir = 1;
-				int rr = r + dr[dir];
-				int cc = c + dc[dir];
-				if (canMove(rr, cc))
-				{
-					change(r, c, num, rr, cc, map[rr][cc]);
-					fish[num].dir = dir;
+				if (map[nr][nc] == 0) { //옮기려는 자리에 물고기 없는 경우 
+					map[nr][nc] = i;
+					map[rr][cc] = 0;
+					fish[i].r = nr;
+					fish[i].c = nc;
 					break;
 				}
-				cnt++;
+				else { // 물고기리기 자리 바꿈 
+					int tmpNum = map[nr][nc];
+					map[nr][nc] = map[rr][cc];
+					fish[i].r = nr;
+					fish[i].c = nc;
+					fish[i].dir = dd;
+
+					map[rr][cc] = tmpNum;
+					fish[tmpNum].r = rr;
+					fish[tmpNum].c = cc;
+					break;
+				}
+
 			}
 		}
+
 	}
-}
 
-void moveShark(int r, int c, int dir, int cnt)
-{
-	if (cnt > res)
-		res = cnt;
-
-	int nr = sharkDir + dr[sharkDir];
-	int nc = sharkDir + dc[sharkDir];
-	if (nr < 0 || nc < 0 || nr > 3 || nc > 3)
-		return; // 앞으로 계속 이동하는거니께 안봐도 됨!
-	if (map[nr][nc] > 0)
-	{
-		priority_queue<int> tque = que;
-		vector<node> tfish = fish;
-		int tmp[4][4];
-		memcpy(tmp, map, sizeof(tmp));
-
-		map[nr][nc] = -1;
-		res++;
-		moveFish();
-		moveShark(nr, nc, map[nr][nc], cnt + 1);
-
-		que = tque;
-		fish = tfish;
-		memcpy(map, tmp, sizeof(tmp));
+	//상어 이동
+	int rr = r + dr[dir];
+	int cc = c + dc[dir];
+	while (rr >= 0 && cc >= 0 && rr < 4 && cc < 4) {
+		if (map[rr][cc] != 0) {
+			dfs(fish, map, rr, cc, sum + map[rr][cc]);
+		}
+		rr += dr[dir];
+		cc += dc[dir];
 	}
+	return;
 }
-
 int main()
 {
-	queue<node> shark;
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
+	Fish fish[17];
+	int map[4][4];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
 			int num, dir;
 			cin >> num >> dir;
-			if (i == 0 && j == 0)
-			{
-				sharkDir = dir;
-				continue;
-			}
-			map[i][j] = num;
-			que.push(-num);
 			fish[num].r = i;
 			fish[num].c = j;
 			fish[num].dir = dir;
+			map[i][j] = num;
+			fish[num].isDead = false;
 		}
 	}
-	// shark.push({sharkR, sharkC, sharkDir});
-	map[sharkR][sharkC] = -1;
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			cout << map[i][j] << " ";
-		}
-		cout << "\n";
-	}
-	moveFish();
-	for (int i = 0; i < 3; i++)
-	{
-		moveShark(sharkR, sharkC, sharkDir, 1);
-		sharkR += dr[sharkDir];
-		sharkC += dc[sharkDir];
-	}
+	dfs(fish, map, 0, 0, map[0][0]);
 	cout << res;
 	return 0;
 }
